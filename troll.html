@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gửi Bạn Thân Yêu 💌</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Canvas Confetti Library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&family=Comfortaa:wght@600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Quicksand', 'sans-serif'],
+                        cute: ['Comfortaa', 'cursive'],
+                    },
+                    colors: {
+                        pastel: {
+                            bg: '#F8F5FF',
+                            card: '#FFFFFF',
+                            purple: '#E9E3FF',
+                            pink: '#FFE8EC',
+                            accent: '#9D8CFF',
+                            accentHover: '#8B78FF',
+                            text: '#4A4660',
+                            subtext: '#7A7593',
+                            gray: '#F0EFEF'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #f5f3ff 0%, #fcefe7 50%, #fdf2f8 100%);
+            touch-action: manipulation;
+        }
+
+        /* Ambient subtle floating animations */
+        @keyframes soft-float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(3deg); }
+        }
+        .animate-soft-float {
+            animation: soft-float 4s ease-in-out infinite;
+        }
+        .animate-soft-float-delayed {
+            animation: soft-float 5s ease-in-out 2s infinite;
+        }
+
+        /* Glassmorphism */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+        }
+
+        /* Smooth transition for dodge button */
+        .dodge-transition {
+            transition: transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1), left 0.2s ease-out, top 0.2s ease-out;
+        }
+
+        /* Custom subtle shadow */
+        .soft-shadow {
+            box-shadow: 0 20px 40px -15px rgba(157, 140, 255, 0.15);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4 sm:p-6 overflow-hidden relative select-none text-pastel-text">
+
+    <!-- Subtle Background Ambient Bubbles -->
+    <div class="absolute top-12 left-8 w-24 h-24 sm:w-36 sm:h-36 bg-purple-200/40 rounded-full blur-2xl animate-soft-float pointer-events-none"></div>
+    <div class="absolute bottom-16 right-10 w-32 h-32 sm:w-48 sm:h-48 bg-pink-200/40 rounded-full blur-2xl animate-soft-float-delayed pointer-events-none"></div>
+
+    <!-- Main Card Container -->
+    <main id="mainCard" class="glass-card rounded-3xl p-6 sm:p-10 soft-shadow max-w-md w-full text-center relative z-10 transition-all duration-300">
+        
+        <!-- Customize Settings Button (Top Right) -->
+        <button id="customBtn" aria-label="Tùy chỉnh câu hỏi" class="absolute top-5 right-5 w-10 h-10 bg-pastel-purple/60 hover:bg-pastel-purple text-pastel-accent rounded-2xl flex items-center justify-center transition-colors shadow-sm cursor-pointer">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+        </button>
+
+        <!-- Aesthetic Illustration / GIF -->
+        <div class="mb-6 flex justify-center">
+            <div class="relative p-2 bg-gradient-to-tr from-purple-100 to-pink-100 rounded-2xl shadow-inner">
+                <img id="mainGif" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExeTByYmx4NDFxd3Ewb2c0OTlsMnprenBxYmRqNWRndmxveDF4aWV5OCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/GeimqsH0TLDt4tScGw/giphy.gif](https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExeTByYmx4NDFxd3Ewb2c0OTlsMnprenBxYmRqNWRndmxveDF4aWV5OCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/GeimqsH0TLDt4tScGw/giphy.gif" 
+                     alt="Cute Aesthetic Cat" 
+                     class="w-36 h-36 sm:w-44 sm:h-44 object-cover rounded-xl shadow-sm">
+            </div>
+        </div>
+
+        <!-- Question Title -->
+        <h1 id="questionText" class="font-cute text-xl sm:text-2xl font-bold text-pastel-text mb-8 leading-snug px-2">
+            Cậu có phải là người đáng yêu nhất thế giới không? ✨
+        </h1>
+
+        <!-- Buttons Area -->
+        <div id="buttonArea" class="flex flex-col sm:flex-row items-center justify-center gap-3.5 min-h-[110px] relative w-full">
+            
+            <!-- YES BUTTON -->
+            <button id="yesBtn" class="w-full sm:w-auto bg-pastel-accent hover:bg-pastel-accentHover text-white font-bold text-base sm:text-lg px-7 py-3.5 rounded-2xl shadow-md transition-all duration-200 cursor-pointer z-10 active:scale-95">
+                Đúng zậy! 🥰
+            </button>
+
+            <!-- NO BUTTON (DODGING) -->
+            <button id="noBtn" class="dodge-transition w-full sm:w-auto bg-pastel-gray hover:bg-gray-200 text-pastel-subtext font-semibold text-base sm:text-lg px-7 py-3.5 rounded-2xl transition-colors z-20 cursor-pointer">
+                Không nha 😜
+            </button>
+        </div>
+    </main>
+
+    <!-- Celebration Screen Modal -->
+    <div id="celebrationScreen" class="hidden fixed inset-0 bg-pastel-bg/90 backdrop-blur-md flex-col items-center justify-center p-4 sm:p-6 text-center z-50 transition-all duration-300">
+        <div class="glass-card max-w-sm sm:max-w-md w-full rounded-3xl p-6 sm:p-8 soft-shadow border border-white/80 animate-soft-float">
+            <div class="w-40 h-40 mx-auto mb-5 rounded-2xl overflow-hidden shadow-sm border-2 border-white">
+                <img id="successGif" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExeTByYmx4NDFxd3Ewb2c0OTlsMnprenBxYmRqNWRndmxveDF4aWV5OCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/GeimqsH0TLDt4tScGw/giphy.gif](https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExeTByYmx4NDFxd3Ewb2c0OTlsMnprenBxYmRqNWRndmxveDF4aWV5OCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/GeimqsH0TLDt4tScGw/giphy.gif" alt="Success Celebrations" class="w-full h-full object-cover">
+            </div>
+            
+            <h2 id="successTitle" class="font-cute text-2xl font-bold text-pastel-accent mb-2">
+                Biết ngay mà! 🎉
+            </h2>
+            
+            <p id="successDesc" class="text-base text-pastel-subtext font-medium mb-6 leading-relaxed">
+                Cảm ơn cậu đã đồng ý nhé! Bạn là nhất luôn 🥳❤️
+            </p>
+
+            <button id="resetBtn" class="w-full bg-pastel-accent hover:bg-pastel-accentHover text-white font-bold py-3.5 px-6 rounded-2xl shadow-sm transition active:scale-95">
+                Chơi lại lần nữa 🔄
+            </button>
+        </div>
+    </div>
+
+    <!-- Customization Form Modal -->
+    <div id="customModal" class="hidden fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center p-4 z-50 transition-all">
+        <div class="glass-card rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl border border-white/80 text-left">
+            <h3 class="font-cute text-xl font-bold text-pastel-text mb-4 flex items-center gap-2">
+                ✏️ Tùy chỉnh câu hỏi
+            </h3>
+            
+            <div class="space-y-3.5 text-sm">
+                <div>
+                    <label class="block font-semibold text-pastel-subtext mb-1">Câu hỏi troll:</label>
+                    <input type="text" id="inputQuestion" placeholder="VD: Hôm nay bao tớ đi ăn nhé?" class="w-full bg-white/70 border border-pastel-purple rounded-xl p-3 focus:outline-none focus:border-pastel-accent text-pastel-text">
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-semibold text-pastel-subtext mb-1">Nút Đồng ý:</label>
+                        <input type="text" id="inputYes" placeholder="VD: Ok luôn!" class="w-full bg-white/70 border border-pastel-purple rounded-xl p-3 focus:outline-none focus:border-pastel-accent text-pastel-text">
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-pastel-subtext mb-1">Nút Né tránh:</label>
+                        <input type="text" id="inputNo" placeholder="VD: Nằm mơ đi!" class="w-full bg-white/70 border border-pastel-purple rounded-xl p-3 focus:outline-none focus:border-pastel-accent text-pastel-text">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block font-semibold text-pastel-subtext mb-1">Thông điệp khi bấm Đồng ý:</label>
+                    <textarea id="inputSuccess" rows="2" placeholder="VD: Chốt kèo nha, tối 7h đón tớ!" class="w-full bg-white/70 border border-pastel-purple rounded-xl p-3 focus:outline-none focus:border-pastel-accent text-pastel-text resize-none"></textarea>
+                </div>
+            </div>
+
+            <div class="flex gap-3 mt-6">
+                <button id="cancelModalBtn" class="flex-1 bg-pastel-gray hover:bg-gray-200 text-pastel-subtext font-bold py-3 rounded-xl transition">
+                    Hủy
+                </button>
+                <button id="saveModalBtn" class="flex-1 bg-pastel-accent hover:bg-pastel-accentHover text-white font-bold py-3 rounded-xl shadow-sm transition">
+                    Lưu & Sử dụng 🚀
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Script -->
+    <script>
+        // DOM Elements
+        const noBtn = document.getElementById('noBtn');
+        const yesBtn = document.getElementById('yesBtn');
+        const questionText = document.getElementById('questionText');
+        const celebrationScreen = document.getElementById('celebrationScreen');
+        const resetBtn = document.getElementById('resetBtn');
+        const customBtn = document.getElementById('customBtn');
+        const customModal = document.getElementById('customModal');
+        const cancelModalBtn = document.getElementById('cancelModalBtn');
+        const saveModalBtn = document.getElementById('saveModalBtn');
+
+        // Input Form Elements
+        const inputQuestion = document.getElementById('inputQuestion');
+        const inputYes = document.getElementById('inputYes');
+        const inputNo = document.getElementById('inputNo');
+        const inputSuccess = document.getElementById('inputSuccess');
+        const successDesc = document.getElementById('successDesc');
+
+        let isAbsolute = false;
+        let dodgeCount = 0;
+
+        // Friendly teasing messages for No button
+        const teaseTexts = [
+            "Đố bắt được! 😜",
+            "Bấm làm sao được 🤪",
+            "Đừng cố chấp 🙈",
+            "Đồng ý đi mừ ✨",
+            "Hơi bị khó đấy 🚀",
+            "Bó tay chưa? 👻"
+        ];
+
+        // Dodging Algorithm with strict Viewport Boundary Containment
+        function moveNoButton() {
+            const btnWidth = noBtn.offsetWidth;
+            const btnHeight = noBtn.offsetHeight;
+
+            if (!isAbsolute) {
+                // Pin explicit height/width before changing to fixed to prevent layout shift
+                noBtn.style.width = `${btnWidth}px`;
+                noBtn.style.height = `${btnHeight}px`;
+                noBtn.style.position = 'fixed';
+                isAbsolute = true;
+            }
+
+            // SafeArea padding from screen edge
+            const padding = 16;
+            
+            // Calculate maximum available space inside viewport
+            const maxX = window.innerWidth - btnWidth - padding;
+            const maxY = window.innerHeight - btnHeight - padding;
+
+            // Generate bounded random coordinates
+            const randomX = Math.max(padding, Math.floor(Math.random() * maxX));
+            const randomY = Math.max(padding, Math.floor(Math.random() * maxY));
+
+            noBtn.style.left = `${randomX}px`;
+            noBtn.style.top = `${randomY}px`;
+
+            dodgeCount++;
+
+            // Tease message text change on every few attempts
+            if (dodgeCount % 2 === 0) {
+                const randomTease = teaseTexts[Math.floor(Math.random() * teaseTexts.length)];
+                noBtn.innerText = randomTease;
+            }
+
+            // Gently scale up the YES button to invite clicking
+            const scale = 1 + Math.min(dodgeCount * 0.06, 0.45);
+            yesBtn.style.transform = `scale(${scale})`;
+        }
+
+        // Mouse dodging for Desktop
+        noBtn.addEventListener('mouseenter', moveNoButton);
+
+        // Touch dodging for Mobile devices
+        noBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault(); // Prevents touch trigger triggering click delay
+            moveNoButton();
+        });
+
+        // Click fallback for both
+        noBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            moveNoButton();
+        });
+
+        // Trigger Success Celebration Screen
+        yesBtn.addEventListener('click', () => {
+            celebrationScreen.classList.remove('hidden');
+            celebrationScreen.classList.add('flex');
+
+            // Soft Confetti Effect
+            triggerSoftConfetti();
+        });
+
+        // Celebration Confetti Cannon
+        function triggerSoftConfetti() {
+            const duration = 2.5 * 1000;
+            const animationEnd = Date.now() + duration;
+            const defaults = { startVelocity: 25, spread: 360, ticks: 60, zIndex: 60 };
+
+            function randomInRange(min, max) {
+                return Math.random() * (max - min) + min;
+            }
+
+            const interval = setInterval(function() {
+                const timeLeft = animationEnd - Date.now();
+
+                if (timeLeft <= 0) {
+                    return clearInterval(interval);
+                }
+
+                const particleCount = 50 * (timeLeft / duration);
+
+                // Pastel colored confetti particles
+                confetti(Object.assign({}, defaults, { 
+                    particleCount, 
+                    origin: { x: randomInRange(0.1, 0.9), y: Math.random() - 0.2 },
+                    colors: ['#9D8CFF', '#FFE8EC', '#E9E3FF', '#F59E0B', '#3B82F6']
+                }));
+            }, 250);
+        }
+
+        // Reset App State to original layout
+        resetBtn.addEventListener('click', () => {
+            celebrationScreen.classList.add('hidden');
+            celebrationScreen.classList.remove('flex');
+            
+            // Restore button position
+            noBtn.style.position = 'static';
+            noBtn.style.left = 'auto';
+            noBtn.style.top = 'auto';
+            noBtn.style.width = 'auto';
+            noBtn.style.height = 'auto';
+            
+            isAbsolute = false;
+            dodgeCount = 0;
+
+            // Reset YES button scale
+            yesBtn.style.transform = 'scale(1)';
+        });
+
+        // Modal Handlers
+        customBtn.addEventListener('click', () => {
+            customModal.classList.remove('hidden');
+        });
+
+        cancelModalBtn.addEventListener('click', () => {
+            customModal.classList.add('hidden');
+        });
+
+        saveModalBtn.addEventListener('click', () => {
+            const newQ = inputQuestion.value.trim();
+            const newYes = inputYes.value.trim();
+            const newNo = inputNo.value.trim();
+            const newSuccess = inputSuccess.value.trim();
+
+            if (newQ) questionText.innerText = newQ;
+            if (newYes) yesBtn.innerText = newYes;
+            if (newNo) noBtn.innerText = newNo;
+            if (newSuccess) successDesc.innerText = newSuccess;
+
+            customModal.classList.add('hidden');
+            resetBtn.click();
+        });
+
+        // Window Resize Listener to ensure No button stays inside screen
+        window.addEventListener('resize', () => {
+            if (isAbsolute) {
+                moveNoButton();
+            }
+        });
+    </script>
+</body>
+</html>
