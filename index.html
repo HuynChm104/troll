@@ -185,6 +185,7 @@
         // DOM Elements
         const noBtn = document.getElementById('noBtn');
         const yesBtn = document.getElementById('yesBtn');
+        const buttonArea = document.getElementById('buttonArea');
         const questionText = document.getElementById('questionText');
         const celebrationScreen = document.getElementById('celebrationScreen');
         const resetBtn = document.getElementById('resetBtn');
@@ -214,43 +215,50 @@
         ];
 
         // Dodging Algorithm with strict Viewport Boundary Containment
-        function moveNoButton() {
-            const btnWidth = noBtn.offsetWidth;
-            const btnHeight = noBtn.offsetHeight;
-
-            if (!isAbsolute) {
-                // Pin explicit height/width before changing to fixed to prevent layout shift
-                noBtn.style.width = `${btnWidth}px`;
-                noBtn.style.height = `${btnHeight}px`;
-                noBtn.style.position = 'fixed';
-                isAbsolute = true;
-            }
-
-            // SafeArea padding from screen edge
-            const padding = 16;
-            
-            // Calculate maximum available space inside viewport
-            const maxX = window.innerWidth - btnWidth - padding;
-            const maxY = window.innerHeight - btnHeight - padding;
-
-            // Generate bounded random coordinates
-            const randomX = Math.max(padding, Math.floor(Math.random() * maxX));
-            const randomY = Math.max(padding, Math.floor(Math.random() * maxY));
-
-            noBtn.style.left = `${randomX}px`;
-            noBtn.style.top = `${randomY}px`;
-
-            dodgeCount++;
+        function moveNoButton(shouldDodge = true) {
+            if (shouldDodge) dodgeCount++;
 
             // Tease message text change on every few attempts
-            if (dodgeCount % 2 === 0) {
+            if (shouldDodge && dodgeCount % 2 === 0) {
                 const randomTease = teaseTexts[Math.floor(Math.random() * teaseTexts.length)];
                 noBtn.innerText = randomTease;
             }
 
+            const viewportWidth = document.documentElement.clientWidth;
+            const viewportHeight = document.documentElement.clientHeight;
+            const padding = Math.min(16, viewportWidth / 2, viewportHeight / 2);
+            const maxWidth = Math.max(0, viewportWidth - padding * 2);
+
+            if (!isAbsolute) {
+                noBtn.style.width = `${Math.min(noBtn.offsetWidth, maxWidth)}px`;
+                noBtn.style.position = 'fixed';
+                noBtn.style.boxSizing = 'border-box';
+                noBtn.style.whiteSpace = 'normal';
+                noBtn.style.overflowWrap = 'anywhere';
+                noBtn.style.overflow = 'auto';
+                document.body.appendChild(noBtn);
+                isAbsolute = true;
+            }
+
+            noBtn.style.maxWidth = `${maxWidth}px`;
+            noBtn.style.maxHeight = `${viewportHeight}px`;
+            noBtn.style.width = `${Math.min(noBtn.offsetWidth, maxWidth)}px`;
+
+            const maxX = Math.max(0, viewportWidth - noBtn.offsetWidth - padding);
+            const maxY = Math.max(0, viewportHeight - noBtn.offsetHeight - padding);
+            const minX = Math.min(padding, maxX);
+            const minY = Math.min(padding, maxY);
+            const randomX = minX + Math.floor(Math.random() * (maxX - minX + 1));
+            const randomY = minY + Math.floor(Math.random() * (maxY - minY + 1));
+
+            noBtn.style.left = `${randomX}px`;
+            noBtn.style.top = `${randomY}px`;
+
             // Gently scale up the YES button to invite clicking
-            const scale = 1 + Math.min(dodgeCount * 0.06, 0.45);
-            yesBtn.style.transform = `scale(${scale})`;
+            if (shouldDodge) {
+                const scale = 1 + Math.min(dodgeCount * 0.06, 0.45);
+                yesBtn.style.transform = `scale(${scale})`;
+            }
         }
 
         // Mouse dodging for Desktop
@@ -314,8 +322,15 @@
             noBtn.style.position = 'static';
             noBtn.style.left = 'auto';
             noBtn.style.top = 'auto';
-            noBtn.style.width = 'auto';
-            noBtn.style.height = 'auto';
+            buttonArea.appendChild(noBtn);
+            noBtn.style.width = '';
+            noBtn.style.height = '';
+            noBtn.style.maxWidth = '';
+            noBtn.style.maxHeight = '';
+            noBtn.style.boxSizing = '';
+            noBtn.style.whiteSpace = '';
+            noBtn.style.overflowWrap = '';
+            noBtn.style.overflow = '';
             
             isAbsolute = false;
             dodgeCount = 0;
@@ -351,7 +366,7 @@
         // Window Resize Listener to ensure No button stays inside screen
         window.addEventListener('resize', () => {
             if (isAbsolute) {
-                moveNoButton();
+                moveNoButton(false);
             }
         });
     </script>
